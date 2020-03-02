@@ -1,6 +1,10 @@
-# NgShopping
+# NgShoppingRx
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.6.
+
+## Firebase Hoisting
+
+https://ng-shopping-14631.firebaseapp.com/auth
 
 ## Development server
 
