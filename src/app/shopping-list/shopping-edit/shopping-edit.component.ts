@@ -13,7 +13,7 @@ import { Ingredient } from 'src/app/models/ingredient.model';
   styleUrls: ['./shopping-edit.component.scss']
 })
 export class ShoppingEditComponent implements OnInit, OnDestroy {
-  @ViewChild('f', { static: false }) slForm: NgForm;
+  @ViewChild('f') slForm: NgForm;
   editingSubscription: Subscription;
   editMode = false;
   editedItem: Ingredient;

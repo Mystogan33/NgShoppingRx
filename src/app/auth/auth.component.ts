@@ -18,7 +18,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   isLoading = false;
   error: string = null;
   onDestroy: Subject<any> = new Subject<any>();
-  @ViewChild(PlaceholderDirective, { static: false }) alertHost: PlaceholderDirective;
+  @ViewChild(PlaceholderDirective) alertHost: PlaceholderDirective;
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
