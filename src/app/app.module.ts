@@ -3,7 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { StoreModule }  from '@ngrx/store';
+import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
@@ -35,8 +35,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
       fromApp.appReducer,
       {
         runtimeChecks: {
-        strictStateImmutability: true,
-        strictActionImmutability: true
+          strictStateImmutability: true,
+          strictActionImmutability: true
         }
       }),
     EffectsModule.forRoot([AuthEffects, RecipesEffects]),
@@ -46,8 +46,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     StoreRouterConnectingModule.forRoot(),
     SharedModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
-],
-providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}],
-bootstrap: [AppComponent]
+  ],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

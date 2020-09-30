@@ -29,7 +29,7 @@ export interface AuthRequestData {
   returnSecureToken: boolean;
 }
 
-const handleAuthentification = (resData : AuthResponseData) => {
+const handleAuthentification = (resData: AuthResponseData) => {
   const expirationDate = new Date(
     new Date().getTime() + (+resData.expiresIn * 1000)
   );
@@ -54,19 +54,19 @@ const handleAuthentification = (resData : AuthResponseData) => {
 const handleError = (errorRes: HttpErrorResponse) => {
   let errorMessage = "An unknown error occured!";
 
-  if(!errorRes.error || !errorRes.error.error) {
+  if (!errorRes.error || !errorRes.error.error) {
     return of(new AuthActions.AuthenticateFail(errorMessage));
   } else {
-    switch(errorRes.error.error.message) {
+    switch (errorRes.error.error.message) {
       case 'EMAIL_EXISTS':
-      errorMessage = "This email exists already";
-      break;
+        errorMessage = "This email exists already";
+        break;
       case 'EMAIL_NOT_FOUND':
-      errorMessage = "No account registered with this email."
-      break;
+        errorMessage = "No account registered with this email."
+        break;
       case 'INVALID_PASSWORD':
-      errorMessage = "Invalid password."
-      break;
+        errorMessage = "Invalid password."
+        break;
       default:
     }
     return of(new AuthActions.AuthenticateFail(errorMessage));
@@ -107,19 +107,19 @@ export class AuthEffects {
           returnSecureToken: true
         }
       )
-      .pipe(
-        tap(resData => this.authService.setLogoutTimer(+resData.expiresIn * 1000)),
-        map(handleAuthentification.bind(this)),
-        catchError(handleError.bind(this))
-      )
+        .pipe(
+          tap(resData => this.authService.setLogoutTimer(+resData.expiresIn * 1000)),
+          map(handleAuthentification.bind(this)),
+          catchError(handleError.bind(this))
+        )
     })
   );
 
-  @Effect({dispatch: false})
+  @Effect({ dispatch: false })
   authRedirect = this.actions$.pipe(
     ofType(AuthActions.AUTHENTICATE_SUCCESS, AuthActions.LOGOUT),
     tap((authSuccessAction: AuthActions.AuthenticateSuccess) => {
-      if(authSuccessAction.payload.redirect) this.router.navigate(['/']);
+      if (authSuccessAction.payload.redirect) this.router.navigate(['/']);
     })
   );
 
@@ -134,8 +134,8 @@ export class AuthEffects {
         _tokenExpirationDate: string;
       } = JSON.parse(localStorage.getItem('userData'));
 
-      if(!userData) {
-        return { type: 'DUMMY'};
+      if (!userData) {
+        return { type: 'DUMMY' };
       }
 
       const loadedUser = new User(
@@ -145,26 +145,26 @@ export class AuthEffects {
         new Date(userData._tokenExpirationDate)
       );
 
-      if(loadedUser.token) {
+      if (loadedUser.token) {
         const expirationDuration = new Date(
           userData._tokenExpirationDate
         ).getTime() - new Date().getTime();
 
         this.authService.setLogoutTimer(expirationDuration);
         return new AuthActions.AuthenticateSuccess({
-            email: loadedUser.email,
-            userId: loadedUser.id,
-            token: loadedUser.token,
-            expirationDate: new Date(userData._tokenExpirationDate),
-            redirect: false
-          });
+          email: loadedUser.email,
+          userId: loadedUser.id,
+          token: loadedUser.token,
+          expirationDate: new Date(userData._tokenExpirationDate),
+          redirect: false
+        });
       }
 
-      return { type: 'DUMMY'};
+      return { type: 'DUMMY' };
     })
   )
 
-  @Effect({dispatch: false})
+  @Effect({ dispatch: false })
   authLogout = this.actions$.pipe(
     ofType(AuthActions.LOGOUT),
     tap(() => {
@@ -179,5 +179,5 @@ export class AuthEffects {
     private http: HttpClient,
     private router: Router,
     private authService: AuthService
-  ) {}
+  ) { }
 }

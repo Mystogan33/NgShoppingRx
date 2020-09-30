@@ -9,7 +9,6 @@ import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
 import * as RecipesActions from './recipes.actions';
 import * as fromApp from '../../store/app.reducer';
 import { Recipe } from 'src/app/models/recipe.model';
-import { of } from 'rxjs';
 
 @Injectable()
 export class RecipesEffects {
@@ -19,38 +18,21 @@ export class RecipesEffects {
   @Effect()
   fetchRecipes = this.actions$.pipe(
     ofType(RecipesActions.FETCH_RECIPES),
-    switchMap(() => {
-      return this.http
-      .get<Recipe[]>(this.dbUrl)
-    }),
-    map(recipes => {
-      if(!recipes) {
-        return [];
-      }
-      return recipes.map((recipe: Recipe) => {
-        return {
-          ...recipe,
-          ingredients: recipe.ingredients ? recipe.ingredients : []
-        }
-      })
-    }),
+    switchMap(() => this.http.get<Recipe[]>(this.dbUrl)),
+    map(recipes => !recipes ? [] : recipes.map(recipe => ({ ...recipe, ingredients: recipe.ingredients ? recipe.ingredients : [] }))),
     map(recipes => new RecipesActions.SetRecipes(recipes))
   );
 
-  @Effect({dispatch: false})
+  @Effect({ dispatch: false })
   storeRecipes = this.actions$.pipe(
     ofType(RecipesActions.STORE_RECIPES),
     withLatestFrom(this.store.select('recipes')),
-    switchMap(([actionData, recipesState]) => {
-      console.log(recipesState.recipes);
-      return this.http
-      .put(this.dbUrl, recipesState.recipes)
-    })
+    switchMap(([_, recipesState]) => this.http.put(this.dbUrl, recipesState.recipes))
   );
 
   constructor(
     private actions$: Actions,
     private http: HttpClient,
     private store: Store<fromApp.AppState>
-  ) {}
+  ) { }
 }

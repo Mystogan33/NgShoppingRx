@@ -18,7 +18,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   isLoading = false;
   error: string = null;
   onDestroy: Subject<any> = new Subject<any>();
-  @ViewChild(PlaceholderDirective, {static: false}) alertHost: PlaceholderDirective;
+  @ViewChild(PlaceholderDirective, { static: false }) alertHost: PlaceholderDirective;
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
@@ -27,38 +27,33 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store.select('auth')
-    .pipe(takeUntil(this.onDestroy))
-    .subscribe(authState => {
-      this.isLoading = authState.loading;
-      this.error = authState.authError;
-      if(this.error) {
-        this.showErrorAlert(this.error);
-      }
-    });
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe(authState => {
+        this.isLoading = authState.loading;
+        this.error = authState.authError;
+
+        if (this.error) this.showErrorAlert(this.error);
+      });
   }
 
-  onSwitchMode() {
-    this.isLoginMode = !this.isLoginMode;
-  }
+  onSwitchMode() { this.isLoginMode = !this.isLoginMode; }
 
-  onSubmit(form : NgForm) {
-    if(!form.valid) {
+  onSubmit(form: NgForm) {
+    if (!form.valid) {
       return;
     } else {
       const [email, password] = [form.value.email, form.value.password];
 
-      if(this.isLoginMode) {
-        this.store.dispatch(new AuthActions.LoginStart({
-            email,
-            password
-          })
-        );
-      } else {
-        this.store.dispatch(new AuthActions.SignupStart({
-          email,
-          password
-        }))
-      }
+      const authCredientials = {
+        email,
+        password
+      };
+
+      const action = this.isLoginMode
+        ? new AuthActions.LoginStart(authCredientials)
+        : new AuthActions.SignupStart(authCredientials);
+
+      this.store.dispatch(action);
     }
 
     form.reset();
@@ -77,10 +72,10 @@ export class AuthComponent implements OnInit, OnDestroy {
 
     componentRef.instance.message = errorMessage;
     componentRef.instance.close
-    .pipe(take(1))
-    .subscribe(() => {
-      hostViewContainerRef.clear();
-    });
+      .pipe(take(1))
+      .subscribe(() => {
+        hostViewContainerRef.clear();
+      });
   }
 
   ngOnDestroy() {

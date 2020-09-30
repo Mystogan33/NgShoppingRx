@@ -9,7 +9,6 @@ import * as fromApp from '../../store/app.reducer';
 import * as RecipesActions from '../store/recipes.actions';
 import * as ShoppingListActions from '../../shopping-list/store/shopping-list.actions';
 import { Recipe } from 'src/app/models/recipe.model';
-import { RecipeService } from '../recipe.service';
 
 @Component({
   selector: 'app-recipe-detail',
